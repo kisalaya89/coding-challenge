@@ -10,7 +10,7 @@ public class TestBalancePortfolio {
 				"GOOG,60,50.96,52,98,AAPL,30,29.92,136,22,TSLA,10,19.12,239,8");
 
 		RebalancingTransactions quickBalancingSuggestion = portfolioBalancer
-				.getQuickBalancingSuggestion();
+				.fitMostBalancingSuggestion();
 		System.out.println(quickBalancingSuggestion);
 	}
 }

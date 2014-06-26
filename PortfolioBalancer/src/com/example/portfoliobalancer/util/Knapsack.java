@@ -84,4 +84,50 @@ public class Knapsack {
 		}
 		return indicesWhichFit;
 	}
+
+	/**
+	 * @param sackSize
+	 *            total weight the sack can accommodate.
+	 * @param profit
+	 *            Array(List) of profit/value of the items.
+	 * @param weight
+	 *            Array(List) of weight of the items.
+	 * @return Array(List) of indices which go into the sack to generate max.
+	 *         value
+	 */
+	public ArrayList<Integer> fitMaxDouble(double sackSize,
+			ArrayList<Double> profit, ArrayList<Double> weight) {
+
+		// check invalid cases.
+		if ((profit == null || weight == null) || (sackSize == 0)
+				|| (profit.size() != weight.size()) || (profit.size() == 0))
+			return new ArrayList<Integer>();
+
+		int numOfElems = profit.size();
+
+		ArrayList<Integer> indicesWhichFit = new ArrayList<Integer>();
+		double[][] optionsArray = new double[numOfElems + 1][(int) (sackSize + 1)];
+		boolean[][] solutionArray = new boolean[numOfElems + 1][(int) (sackSize + 1)];
+
+		for (int n = 1; n <= numOfElems; n++) {
+			for (int w = 1; w <= sackSize; w++) {
+
+				double option1 = optionsArray[n - 1][w];
+				double option2 = Double.MIN_VALUE;
+				if (weight.get(n - 1) <= w)
+					option2 = profit.get(n - 1)
+							+ optionsArray[n - 1][(int) (w - weight.get(n - 1))];
+				optionsArray[n][w] = Math.max(option1, option2);
+				solutionArray[n][w] = (option2 > option1);
+			}
+		}
+		double w = sackSize;
+		for (int n = numOfElems; n > 0; n--) {
+			if (solutionArray[n][(int) w]) {
+				indicesWhichFit.add(n - 1);
+				w = w - weight.get(n - 1);
+			}
+		}
+		return indicesWhichFit;
+	}
 }

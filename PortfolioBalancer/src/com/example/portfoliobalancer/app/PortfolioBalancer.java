@@ -1,11 +1,14 @@
 package com.example.portfoliobalancer.app;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.example.portfoliobalancer.model.Allocation;
 import com.example.portfoliobalancer.model.AllocationManager;
 import com.example.portfoliobalancer.model.RebalancingTransaction;
+import com.example.portfoliobalancer.model.RebalancingTransaction.TransactionType;
 import com.example.portfoliobalancer.model.RebalancingTransactions;
+import com.example.portfoliobalancer.util.Knapsack;
 
 public class PortfolioBalancer {
 
@@ -125,10 +128,15 @@ public class PortfolioBalancer {
 		double excess = 0;
 		for (String ovr : over) {
 			Allocation allocation = allocMgr.getAllocation(ovr);
-			excess += (allocation.getActualAllocation() - allocation
+			double tempExcess = (allocation.getActualAllocation() - allocation
 					.getTargetAllocation())
-					* allocation.getPrice()
-					* (allocMgr.getInvestment() / 100);
+					* (allocMgr.getInvestment() / (allocation.getPrice() * 100));
+
+			tempExcess = Math.floor(tempExcess) * allocation.getPrice();
+			excess += tempExcess;
+			rebalancingTransactions.add(new RebalancingTransaction(allocation
+					.getSymbol(), (long) (tempExcess / allocation.getPrice()),
+					TransactionType.SELL));
 
 		}
 
@@ -146,10 +154,62 @@ public class PortfolioBalancer {
 
 		ArrayList<String> under = allocMgr.getUnder();
 
-		for (String undr : under) {
+		Knapsack knapSack = new Knapsack();
 
+		ArrayList<Double> weight = new ArrayList<Double>();
+		ArrayList<Double> value = new ArrayList<Double>();
+		HashMap<Integer, String> indices = new HashMap<Integer, String>();
+		int cntr = 0;
+		for (String undr : under) {
+			Allocation allocation = allocMgr.getAllocation(undr);
+
+			double val = (allocation.getTargetAllocation() - allocation
+					.getActualAllocation()) * (allocMgr.getInvestment() / 100);
+			val = (Math.floor(val / allocation.getPrice()))
+					* allocation.getPrice();
+			weight.add(val);
+			value.add((double) 1);
+			indices.put(cntr, undr);
+			cntr++;
 		}
 
+		ArrayList<Integer> fitMax = knapSack
+				.fitMaxDouble(excess, value, weight);
+
+		for (Integer index : fitMax) {
+			String symbol = indices.get(index);
+			Allocation allocation = allocMgr.getAllocation(symbol);
+
+			long numStocks = (long) (Math.floor((allocation
+					.getTargetAllocation() - allocation.getActualAllocation())
+					* (allocMgr.getInvestment() / 100) / allocation.getPrice()));
+			excess -= (numStocks * allocation.getPrice());
+			rebalancingTransactions.add(new RebalancingTransaction(symbol,
+					numStocks, TransactionType.SELL));
+		}
+
+		// If not all balanced :
+		if (fitMax.size() < under.size()) {
+			for (int counter = 0; counter < under.size(); counter++) {
+				// if already contained
+				if (fitMax.contains(counter))
+					continue;
+				else {
+					String symbol = under.get(counter);
+					Allocation allocation = allocMgr.getAllocation(symbol);
+					long stocksToBuy = (long) Math.floor(excess
+							/ allocation.getPrice());
+
+					if (stocksToBuy != 0) {
+						rebalancingTransactions.add(new RebalancingTransaction(
+								symbol, stocksToBuy, TransactionType.BUY));
+						excess -= (stocksToBuy * allocation.getPrice());
+					}
+
+				}
+			}
+		}
+		rebalancingTransactions.setExcessMoney(excess);
 		return rebalancingTransactions;
 
 	}
