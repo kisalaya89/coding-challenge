@@ -185,7 +185,7 @@ public class PortfolioBalancer {
 					* (allocMgr.getInvestment() / 100) / allocation.getPrice()));
 			excess -= (numStocks * allocation.getPrice());
 			rebalancingTransactions.add(new RebalancingTransaction(symbol,
-					numStocks, TransactionType.SELL));
+					numStocks, TransactionType.BUY));
 		}
 
 		// If not all balanced :
