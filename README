@@ -1,0 +1,21 @@
+Technical Choices : 
+
+Return an overloaded ArrayList as the result of rebalancing. ToString would print the output in desired form, and the arraylist contains all the trades which need to be done, and can easily be processed further.
+
+The program doesn't return Null in any cases, even with invalid input. This is to avoid breakage of functionality when integrating the module with other modules, an empty Array/String will be returned.
+
+There is a accuracy factor, which determines which stocks need rebalancing. For a sake of simplicity,the default value is 0.5 (i.e. a stock with a deviation of +0.5 to -0.5 from ideal is considered to be balanced. The accuracy factor is adjustable.) 
+
+
+Limitations and Improvements :
+
+Limitations:
+Not enough tests. Some basic tests are there, but that's about it. Need to add more test cases to determine edge cases.
+For the sake of simplicity, assumed the %'s and stock prices to be simple nums (not containing %'s and $'s.Can easily be parsed out if needed).
+
+
+Improvements: 
+The program currently takes in a Textual representation of the CSV. CSV can be moved out to a file.
+Improve the space complexity of the algorithms.
+Improving the accuracy of the algorithms. (If modelled on fractional knapsack problem).
+
