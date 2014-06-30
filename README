@@ -2,7 +2,7 @@ Technical Choices :
 
 Return an overloaded ArrayList as the result of rebalancing. ToString would print the output in desired form, and the arraylist contains all the trades which need to be done, and can easily be processed further.
 
-The program doesn't return Null in any cases, even with invalid input. This is to avoid breakage of functionality when integrating the module with other modules, an empty Array/String will be returned.
+The program doesn't return Null in any cases, even with invalid input. This is to avoid breakage of functionality when integrating the module with other modules, an empty Array/String will be returned. A custom exception can be thrown,for better detection of cause.
 
 There is a accuracy factor, which determines which stocks need rebalancing. For a sake of simplicity,the default value is 0.5 (i.e. a stock with a deviation of +0.5 to -0.5 from ideal is considered to be balanced. The accuracy factor is adjustable.) 
 
@@ -18,4 +18,16 @@ Improvements:
 The program currently takes in a Textual representation of the CSV. CSV can be moved out to a file.
 Improve the space complexity of the algorithms.
 Improving the accuracy of the algorithms. (If modelled on fractional knapsack problem).
+
+
+
+Running :
+
+assuming the input is in form : "GOOG,60,50.96,52,98,AAPL,30,29.92,136,22,TSLA,10,19.12,239,8"
+
+initalize class PortfolioBalancer. Takes in a string in above format (and an optional accuracy factor desc. above).
+
+two methods : getQuickBalancingSuggestion and fitMostBalancingSuggestion return the result, an object of type RebalancingTransactions. It can be printed or used further, as an arraylist of rebalancing transactions.
+
+(Example is in class com.example.portfoliobalancer.TestBalancePortfolio.)
 

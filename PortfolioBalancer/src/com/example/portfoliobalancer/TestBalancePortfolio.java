@@ -7,10 +7,11 @@ public class TestBalancePortfolio {
 
 	public static void main(String args[]) {
 		PortfolioBalancer portfolioBalancer = new PortfolioBalancer(
-				"GOOG,60,50.96,52,98,AAPL,30,29.92,136,22,TSLA,10,19.12,239,8");
+				"A,50,60,60,1,B,50,40,20,2");
 
 		RebalancingTransactions quickBalancingSuggestion = portfolioBalancer
-				.fitMostBalancingSuggestion();
+				.getQuickBalancingSuggestion();
 		System.out.println(quickBalancingSuggestion);
+		System.out.println(quickBalancingSuggestion.getExcessMoney());
 	}
 }

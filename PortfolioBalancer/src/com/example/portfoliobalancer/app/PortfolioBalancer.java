@@ -17,7 +17,17 @@ public class PortfolioBalancer {
 	public PortfolioBalancer(String portfolio) {
 
 		allocMgr = new AllocationManager();
+		parseInput(portfolio);
 
+	}
+
+	public PortfolioBalancer(String portfolio, float sensitivity) {
+
+		allocMgr = new AllocationManager(sensitivity);
+		parseInput(portfolio);
+	}
+
+	private void parseInput(String portfolio) {
 		if (portfolio != null) {
 
 			String[] split = portfolio.split(",");
@@ -48,11 +58,10 @@ public class PortfolioBalancer {
 	public RebalancingTransactions getQuickBalancingSuggestion() {
 
 		ArrayList<String> over = allocMgr.getOver();
-
 		RebalancingTransactions rebalancingTransactions = new RebalancingTransactions();
 		double excess = 0;
-
 		for (String ovr : over) {
+
 			Allocation allocation = allocMgr.getAllocation(ovr);
 
 			double tempExcess = (allocation.getActualAllocation() - allocation
@@ -64,6 +73,7 @@ public class PortfolioBalancer {
 			tempExcess = maxIntegeralSelling * allocation.getPrice();
 
 			excess += tempExcess;
+
 			rebalancingTransactions.add(new RebalancingTransaction(allocation
 					.getSymbol(), (long) maxIntegeralSelling,
 					RebalancingTransaction.TransactionType.SELL));
@@ -79,7 +89,7 @@ public class PortfolioBalancer {
 			// if no balance left to purchase or not enough money left to buy
 			// even one share => no more re balancing possible => break
 
-			if (excess <= 0 || excess <= allocation.getPrice())
+			if (excess <= 0 || excess < allocation.getPrice())
 				break;
 
 			double tempExcess = (allocation.getTargetAllocation() - allocation
@@ -214,15 +224,16 @@ public class PortfolioBalancer {
 
 	}
 
-	public String getBalanceSuggestionString() {
-		ArrayList<RebalancingTransaction> balanceSuggestion = getQuickBalancingSuggestion();
-		String rebalancingTrans = "";
-
-		for (RebalancingTransaction trans : balanceSuggestion) {
-			rebalancingTrans += trans.getSymbol() + " " + trans.getBuyOrSell()
-					+ " " + trans.getStocks() + "\n";
-		}
-		fitMostBalancingSuggestion();
-		return rebalancingTrans;
-	}
+	// public String getBalanceSuggestionString() {
+	// ArrayList<RebalancingTransaction> balanceSuggestion =
+	// getQuickBalancingSuggestion();
+	// String rebalancingTrans = "";
+	//
+	// for (RebalancingTransaction trans : balanceSuggestion) {
+	// rebalancingTrans += trans.getSymbol() + " " + trans.getBuyOrSell()
+	// + " " + trans.getStocks() + "\n";
+	// }
+	// fitMostBalancingSuggestion();
+	// return rebalancingTrans;
+	// }
 }

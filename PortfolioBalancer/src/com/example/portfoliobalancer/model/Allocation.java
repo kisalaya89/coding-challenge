@@ -7,6 +7,10 @@ import java.util.Comparator;
  * 
  *         Structure to hold the current allocation Assuming the state will be
  *         initialized only once, hence the setters should be private.
+ * 
+ *         Price is float, since no stock in history might have gone over the
+ *         max. value of float. SharesHeld may go over range of int,and are
+ *         integeral. targetAlloc and actualAlloc <100
  */
 public class Allocation {
 
@@ -14,7 +18,6 @@ public class Allocation {
 	private float targetAllocation;
 	private float actualAllocation;
 	private float price;
-
 	private long sharesHeld;
 
 	public Allocation(String symbol, float targetAllocation,
@@ -74,14 +77,29 @@ public class Allocation {
 				+ " stocks:" + sharesHeld;
 	}
 
+	/**
+	 * @author kisalaya
+	 * 
+	 */
 	public static class AllocationComparator implements Comparator<Allocation> {
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+		 */
 		@Override
 		public int compare(Allocation o1, Allocation o2) {
+			if (o1 == null || o2 == null) {
+				return -1;
+			}
+
 			if (o1.price > o2.price)
 				return 1;
-			else
+			else if (o1.price < o2.price)
 				return -1;
+			else
+				return 0;
 		}
 
 	}
