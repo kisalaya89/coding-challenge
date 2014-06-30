@@ -20,6 +20,18 @@ public class Allocation {
 	private float price;
 	private long sharesHeld;
 
+	/**
+	 * @param symbol
+	 *            Symbol
+	 * @param targetAllocation
+	 *            Target Allocation for the stock
+	 * @param actualAllocation
+	 *            Actual Allocation Symbol
+	 * @param sharesHeld
+	 *            Num. of stocks held
+	 * @param price
+	 *            Price of one stock
+	 */
 	public Allocation(String symbol, float targetAllocation,
 			float actualAllocation, long sharesHeld, float price) {
 

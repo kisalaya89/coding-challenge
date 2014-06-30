@@ -28,12 +28,16 @@ public class PortfolioBalancer {
 	}
 
 	private void parseInput(String portfolio) {
+
+		float totalAlloc = 0;
+
 		if (portfolio != null) {
 
 			String[] split = portfolio.split(",");
 			// atleast one data field
 			if (split.length >= 5)
 				for (int i = 0; i < split.length; i = i + 5) {
+					totalAlloc += Float.parseFloat(split[i + 1]);
 					Allocation allocation = new Allocation(split[i],
 							Float.parseFloat(split[i + 1]),
 							Float.parseFloat(split[i + 2]),
@@ -43,7 +47,9 @@ public class PortfolioBalancer {
 					allocMgr.addAllocation(allocation);
 
 				}
-
+			if (totalAlloc != 100.0) {
+				throw new IllegalArgumentException();
+			}
 		}
 
 	}
